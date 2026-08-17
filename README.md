@@ -112,6 +112,9 @@ Each item states the outcome it unlocks, not just the change.
 **Now — Prescriptions are safe by default for athletes.** No athlete under active clearance can be prescribed a prohibited substance without an explicit, logged override.
 - Add a prohibited-substance check between the prescribing flow and the athlete's clearance status.
 - Fail-safe: when substance status cannot be resolved, block and require confirmation rather than allowing silently.
+**Now — Prescribing and clearance decisions are independently auditable.** Someone who neither prescribes nor certifies can review what was overridden and why.
+- Add a read-only Compliance Reviewer role that consumes the audit log, including the prohibited-substance justifications the anti-doping check records.
+- Separation of duties: the reviewer holds no clinical capability and cannot alter records.
 
 **Next — Changes can be made without silent regressions.** The service layer can evolve with confidence.
 - JUnit suite covering happy paths and every exception path in `ClinicService`, replacing manual console testing.
