@@ -8,6 +8,20 @@ This document specifies user stories with acceptance criteria for AxisMed Elite'
 - `Reconstructed` — specifies behaviour already implemented in the current codebase. Acceptance criteria are anchored to verified service-layer behaviour.
 - `Proposed` — specifies net-new behaviour not yet built. Written before implementation as forward specification.
 
+## Definition of Ready
+
+Every story here meets a readiness bar before it is considered fit to build:
+
+- Written in role / capability / benefit form
+- Acceptance criteria present and testable
+- Dependencies identified and sequenced, not left implicit
+- Estimable — or, if not, held behind a spike until it is
+- Small enough to fit a single sprint
+
+The bar is deliberately light: it asks whether a story is ready enough to start productively, not whether every detail is settled. Detail that belongs in the build conversation stays there.
+
+The gate is doing real work, not decorating. Stories A2a and A3 depend on values the A6 spike has not yet returned — the substance-matching approach and the staleness threshold. Until the spike resolves them, A2a and A3 are not ready, and a team would hold them out of a sprint rather than pull them in on a guessed estimate. A6, being timeboxed, is itself ready and is the first of these items to pull. The gate is sequencing the work, not blocking it.
+
 ## Story index
 
 | ID | Story | Flow | Status |
