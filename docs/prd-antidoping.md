@@ -80,6 +80,17 @@ Sequencing:
 - v2 — product-to-ingredient mapping; in-competition timing computed from `SportingEvent` dates.
 - v3 — maintained or automated list updates from an official source.
 
+## Definition of Done (v1)
+
+v1 of the anti-doping check is done when all of the following hold — not when the code merely runs:
+
+- Acceptance criteria for A2a (always-prohibited warning), A3 (fail-loud when unresolved), A4 (justification required), and A5 (override audited) are verified met.
+- The fail-loud path is tested directly: an unavailable or unreadable list blocks the save, not only the happy path.
+- An overridden prescription produces an append-only audit entry carrying substance, justification, doctor, and timestamp.
+- The guardrail is measured, not merely instrumented: the false-flag rate on a representative substance set is confirmed under 5% before release. If it is not measured, v1 is not done.
+
+This is a feature-level exit gate for v1, distinct from the per-story acceptance criteria: a story can meet its own criteria while the feature as a whole is not yet safe to ship.
+
 ## Biggest open risk
 
 Substance matching. If v1 relies on free-text drug names instead of a controlled substance field, the check will both miss real prohibited substances and false-flag permitted ones — failing the primary metric and tripping the guardrail at once. The substance-selection design decides whether v1 works at all.
