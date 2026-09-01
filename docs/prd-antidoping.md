@@ -8,7 +8,9 @@ Specifies a check that screens prescribed medications and supplements against an
 
 AxisMed Elite serves elite athletes and issues doping clearance (an official ruling that an athlete may compete), yet its prescribing flow records a medication or supplement without checking what is being prescribed. A doctor can prescribe a substance on the WADA Prohibited List (World Anti-Doping Agency — the body defining substances athletes may not use), causing the athlete to fail the very clearance the clinic certifies. The cost is direct: a wrongly prescribed substance can end an athlete's eligibility and expose the clinic to liability. It matters now because anti-doping is the clinic's defining constraint, and the prescribing flow is currently blind to it.
 
-Assumption: the prescribing flow performs no substance-level checking today.
+Evidence: verified by code inspection — `prescribeMedication()` records and audits the medication with no branch referencing the prohibited-substance list, the athlete's `SportingEvent` participation, or clearance status. The gap is confirmed, not assumed. Frequency is not established — there is no incident data — so the case rests on severity, not frequency: a catastrophic, irreversible harm against which the system offers no barrier warrants action on its own.
+
+Job (hypothesis, pending validation): *When I am about to prescribe for an athlete who may be competing, I want to be sure the substance will not put their eligibility at risk, so I can treat them without becoming the doctor who ended a career or the clinic that failed its core certification.*
 
 ## Users
 
