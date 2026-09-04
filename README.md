@@ -2,6 +2,7 @@
 > A console-based Java system for an international sports-medicine clinic — managing patients, staff, appointments, diagnoses, treatment plans, and team clearances across six cities, with role-based access and a global patient record.
 
 **Stack:** Java 17 · CSV persistence · **Status:** Functional prototype (console)
+Includes a full BA case study — PRD, user stories, acceptance criteria — for a proposed anti-doping prescribing check. See docs/.
 
 ## Problem
 
