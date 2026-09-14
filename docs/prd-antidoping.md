@@ -26,8 +26,9 @@ Job (hypothesis, pending validation): *When I am about to prescribe for an athle
 ## Scope
 
 In (v1):
-- Screen each prescribed substance against a loaded prohibited-substance list at the point of prescribing.
+- Screen each prescribed substance against a loaded prohibited-substance list at the point of prescribing — but only for patients flagged `subjectToAntiDoping`, so non-regulated patients (hobbyists, chronic-care, retired) are never checked.
 - Warn on a match, and require a justification before the prescription can be saved.
+- Capture `subjectToAntiDoping` at patient registration, so the gate has a value to read.
 
 Cut / Later:
 - Allergy, condition, and duplicate-drug checking — ordinary patient safety, a different problem; later.
@@ -58,10 +59,12 @@ Story 2:
 Data & dependencies:
 - A prohibited-substance list stored as `prohibited_substances.csv`, loaded at startup by a new repository following the existing CSV-repository pattern; fields: substance name, category (always / in-competition), list version-year.
 - The list is reissued annually by WADA, so its currency is a maintained dependency and needs an assigned owner; without one it silently ages and the check stops being trustworthy.
+- A per-patient `subjectToAntiDoping` flag, set at registration, is the gate: `true` runs the check, `false` skips it. This is a new field. Without it the check cannot tell a regulated athlete from a hobbyist or chronic-care patient and would flag everyone — tripping the guardrail on volume alone.
 - Build vs buy: v1 builds a small static list to demonstrate the flow; a production version sources an official machine-readable list — an integration decision deferred to the RFC.
 
 System impact:
 - Hook point: `ClinicService.prescribeMedication()` — the check runs after the doctor enters the substance and before the `Medication` is written to the medical record and before `AuditService` logs the action.
+- Gate: the check runs only when `patient.subjectToAntiDoping` is `true`. The gate is a single boolean, deliberately decoupled from the `Sport` taxonomy — so the safeguard never depends on classifying sports correctly. (`Sport.NONE` and `Sport.OTHER` should be added for data-model completeness, but they are not on the safety path.)
 - Data model: `Medication` gains an optional justification reference; the justification (category, note, timestamp, doctor) is written through the existing `AuditService`, avoiding a new persistence path.
 - The change lives in the service layer plus one new repository, consistent with the existing three-layer design (UI → service → repository); no new architectural layer.
 - Consumer: the justification audit entry is intended for a proposed read-only Compliance Reviewer role. It is modelled as a `UserRole` with no `Staff` object — deliberately not mirroring the current admin, which links to a `Doctor` staff record and therefore holds clinical capability an auditor must not have.
@@ -75,10 +78,11 @@ Technical risks & open questions:
 - Substance matching is the hard part: mapping what the doctor entered (a product or brand) to a listed substance (an active ingredient) is non-trivial across brands, spellings, and combination products. v1 sidesteps this with a controlled substance field; robust product-to-ingredient matching is the main question for the RFC.
 - In-competition checking depends on the athlete's event dates, held in `SportingEvent`; wiring prescribing to event timing is a v2 design question.
 - The external list's format and refresh mechanism are unresolved and belong in the RFC.
+- The `subjectToAntiDoping` flag is set once at registration, not re-evaluated. A patient who becomes regulated later would be missed unless it is updated; a retired athlete stays flagged. For v1 the accepted error direction is over-inclusion (flag the retired) over under-inclusion (miss the active) — missing a regulated athlete is the catastrophic failure, so the gate errs toward checking. Keeping the flag current is a maintained dependency, like the list.
 
 Sequencing:
 - Spike (precondition for v1): resolve list source, substance-matching approach, and the staleness threshold before A2/A3 estimation. The threshold value is referenced by the fail-loud criterion but supplied by this spike, not by the criterion itself.
-- v1 — static version-stamped list, exact substance match, warn + justify + audit.
+- v1 — capture `subjectToAntiDoping` at registration; static version-stamped list, exact substance match, warn + justify + audit, for regulated patients only.
 - v2 — product-to-ingredient mapping; in-competition timing computed from `SportingEvent` dates.
 - v3 — maintained or automated list updates from an official source.
 
@@ -86,7 +90,7 @@ Sequencing:
 
 v1 of the anti-doping check is done when all of the following hold — not when the code merely runs:
 
-- Acceptance criteria for A2a (always-prohibited warning), A3 (fail-loud when unresolved), A4 (justification required), and A5 (override audited) are verified met.
+- Acceptance criteria for A7 (anti-doping status captured at registration), A2a (always-prohibited warning), A3 (fail-loud when unresolved), A4 (justification required), and A5 (override audited) are verified met.
 - The fail-loud path is tested directly: an unavailable or unreadable list blocks the save, not only the happy path.
 - An overridden prescription produces an append-only audit entry carrying substance, justification, doctor, and timestamp.
 - The guardrail is measured, not merely instrumented: the false-flag rate on a representative substance set is confirmed under 5% before release. If it is not measured, v1 is not done.
