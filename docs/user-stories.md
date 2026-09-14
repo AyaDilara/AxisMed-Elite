@@ -20,7 +20,7 @@ Every story here meets a readiness bar before it is considered fit to build:
 
 The bar is deliberately light: it asks whether a story is ready enough to start productively, not whether every detail is settled. Detail that belongs in the build conversation stays there.
 
-The gate is doing real work, not decorating. Stories A2a and A3 depend on values the A6 spike has not yet returned — the substance-matching approach and the staleness threshold. Until the spike resolves them, A2a and A3 are not ready, and a team would hold them out of a sprint rather than pull them in on a guessed estimate. A6, being timeboxed, is itself ready and is the first of these items to pull. The gate is sequencing the work, not blocking it.
+The gate is doing real work, not decorating. A2a and A3 depend on values the A6 spike has not yet returned — the substance-matching approach and the staleness threshold — so both are not ready until it closes. A2a has a second dependency: it cannot run without the `subjectToAntiDoping` field from A7, so A7 sequences ahead of it. A6, being timeboxed, is itself ready and is the first item to pull. The gate is sequencing the work, not blocking it.
 
 ## Story index
 
@@ -33,6 +33,7 @@ The gate is doing real work, not decorating. Stories A2a and A3 depend on values
 | A4 | Record justification for a flagged substance | Prescribing + anti-doping | Proposed |
 | A5 | Audit the justified prescription | Prescribing + anti-doping | Proposed |
 | A6 | Spike — prohibited-substances data source | Prescribing + anti-doping | Proposed (investigation) |
+| A7 | Capture anti-doping status at registration | Prescribing + anti-doping | Proposed (v1) |
 | B1 | Register patient with type | Registration & records | Reconstructed |
 | B2 | Prevent duplicate registration | Registration & records | Reconstructed |
 | B3 | View global medical record | Registration & records | Reconstructed |
@@ -68,7 +69,7 @@ As a **doctor**, I want to prescribe a medication or supplement to a patient, so
 
 As a **doctor**, I want to be warned when a substance I am prescribing is prohibited at all times, so that the athlete is not later ruled ineligible because of a drug we prescribed.
 
-**Given** a prescribed substance that is prohibited at all times
+**Given** a patient flagged `subjectToAntiDoping` and a prescribed substance that is prohibited at all times
 **When** the doctor submits the prescription
 **Then** an interruptive warning naming the substance and its category is displayed
 **And** the prescription cannot be saved until the substance is removed or a justification is recorded
@@ -76,6 +77,11 @@ As a **doctor**, I want to be warned when a substance I am prescribing is prohib
 **Given** a prescribed substance that is not on the list
 **When** the doctor submits the prescription
 **Then** no anti-doping warning is shown
+**And** prescribing proceeds normally
+
+**Given** a patient not flagged `subjectToAntiDoping` (hobbyist, chronic-care, or retired)
+**When** the doctor submits any prescription
+**Then** no anti-doping check runs
 **And** prescribing proceeds normally
 
 ### A2b — Warn on in-competition-only substance `Proposed (v2)`
@@ -149,6 +155,23 @@ This is a timeboxed investigation, not a shippable story. It resolves:
 - The freshness threshold at which a loaded list is treated as stale (the value referenced by A3).
 
 Stories A2 and A3 are not estimable until this investigation closes.
+
+### A7 — Capture anti-doping status at registration `Proposed (v1)`
+
+As an **admin**, I want to record whether a patient is subject to anti-doping rules when I register them, so that the prescribing check knows which patients to screen.
+
+**Given** the admin is registering or editing a patient
+**When** they set the patient's anti-doping status
+**Then** the patient is stored with `subjectToAntiDoping` true or false
+**And** the value is available to the prescribing check as its gate
+
+**Given** an existing patient registered before this field existed
+**When** the field has no value
+**Then** the patient is treated as subject to anti-doping until reviewed — the safe default, over-inclusion not under-inclusion
+
+This extends the reconstructed B1 registration flow with one new field. It is the data prerequisite for A2a's gate.
+
+v1 migration: the seed population is small enough to review once at setup, setting each flag correctly rather than relying on the default. At scale, the field is captured progressively at each patient's next appointment or via outreach, defaulting safe until then.
 
 ---
 
