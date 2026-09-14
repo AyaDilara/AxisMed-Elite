@@ -111,7 +111,7 @@ The specification for closing this gap lives in [`docs/prd-antidoping.md`](docs/
 
 Each item states the outcome it unlocks, not just the change.
 
-**Now — Prescriptions are safe by default for athletes.** No athlete under active clearance can be prescribed a prohibited substance without an explicit, logged override.
+**Now — Prescriptions are safe by default for athletes.** No athlete subject to anti-doping rules can be prescribed a prohibited substance without an explicit, logged override.
 - Add a prohibited-substance check between the prescribing flow and the athlete's clearance status.
 - Fail-safe: when substance status cannot be resolved, block and require confirmation rather than allowing silently.
 
