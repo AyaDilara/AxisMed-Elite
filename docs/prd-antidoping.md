@@ -26,6 +26,12 @@ Job (hypothesis, pending validation): *When I am about to prescribe for an athle
   - Denominator: prescriptions that passed through the check — i.e., to patients flagged `subjectToAntiDoping` — per calendar quarter. Not all prescriptions.
   - Source: audit log.
   - Migration caveat: during the A7 backfill window, legacy patients default to `subjectToAntiDoping = true`, which inflates both the denominator and the wrong-population share. The guardrail is not trustworthy until the legacy population is reviewed; report it separately (or suppress it) for the first quarter and state the review completion date alongside the first valid reading.
+- Counter-metric — illegitimate-override rate flags gaming of the primary metric. "Zero violations" can be faked if doctors reflexively override every warning, so this catches that.
+  - Numerator: overrides the compliance reviewer judged not clinically justified. (A legitimate TUE override is correct behaviour and is not counted.)
+  - Denominator: overrides reviewed — reported alongside review coverage (overrides reviewed ÷ total overrides), since a low rate over few reviews is meaningless.
+  - Per calendar quarter. Source: audit log + compliance-reviewer verdicts. Lagging — verdicts arrive after review, so this detects gaming on a delay, not live.
+  - Ground truth is the internal compliance reviewer, backstopped by the external anti-doping authority that reviews each justification at competition. That external check is why no watcher-of-the-reviewer is added: a second internal oversight layer would duplicate scrutiny the outside world already performs.
+  - Cadence requirement: review is detective (overrides proceed immediately per A4; the reviewer inspects after the fact), so it must run at least weekly — daily preferred — to keep gaming-detection lag inside the window where an undetected rubber-stamping pattern could harm an athlete's eligibility. Staffing to meet this cadence is an operations decision; the maximum lag is a metric requirement and lives here.
 
 ## Scope
 
