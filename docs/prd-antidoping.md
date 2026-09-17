@@ -1,6 +1,6 @@
 # PRD — Anti-Doping Prescribing Check (AxisMed Elite)
 
-**Status:** Proposed
+**Status:** Proposed · **Owner:** Aya-Dilara · **Downstream:** RFC (technical design) not yet written
 
 Specifies a check that screens prescribed medications and supplements against anti-doping rules at the point of prescribing. Clinical and anti-doping terms are glossed in parentheses for non-specialist readers.
 
@@ -30,8 +30,10 @@ In (v1):
 - Warn on a match, and require a justification before the prescription can be saved.
 - Capture `subjectToAntiDoping` at patient registration, so the gate has a value to read.
 
-Cut / Later:
-- Allergy, condition, and duplicate-drug checking — ordinary patient safety, a different problem; later.
+Non-goals (explicitly not part of the anti-doping feature):
+- General patient-safety checking — allergy, condition, and duplicate-drug interactions. Planned as separate patient-safety work, not part of anti-doping compliance. Out of scope for this PRD by decision, not by timing.
+
+Cut / Later (deferred, planned within this feature):
 - Product-name to active-ingredient mapping — v1 matches on a selected substance, not a free-text brand name.
 - In-competition timing — some substances are prohibited only around events; v2 can compute this from existing `SportingEvent` dates.
 - Automated annual list updates — v1 loads a static, version-stamped list.
