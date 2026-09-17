@@ -21,7 +21,11 @@ Job (hypothesis, pending validation): *When I am about to prescribe for an athle
 ## Goals & Success Metric
 
 - Primary: prohibited substances prescribed to an athlete without a recorded justification move to zero, measured per quarter from the audit log.
-- Guardrail: false-flag rate (permitted substances wrongly flagged) stays under 5%, so doctors do not begin ignoring warnings.
+- Guardrail — unwanted-flag rate stays under 5%, so doctors do not begin ignoring warnings.
+  - Numerator: flags that should not have interrupted the doctor — either the substance was in fact permitted, or the patient was not subject to anti-doping. Flags correctly raised and then resolved by a valid TUE/justification are NOT counted (those were correct).
+  - Denominator: prescriptions that passed through the check — i.e., to patients flagged `subjectToAntiDoping` — per calendar quarter. Not all prescriptions.
+  - Source: audit log.
+  - Migration caveat: during the A7 backfill window, legacy patients default to `subjectToAntiDoping = true`, which inflates both the denominator and the wrong-population share. The guardrail is not trustworthy until the legacy population is reviewed; report it separately (or suppress it) for the first quarter and state the review completion date alongside the first valid reading.
 
 ## Scope
 
