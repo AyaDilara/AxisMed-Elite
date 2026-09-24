@@ -32,6 +32,10 @@ Job (hypothesis, pending validation): *When I am about to prescribe for an athle
   - Per calendar quarter. Source: audit log + compliance-reviewer verdicts. Lagging — verdicts arrive after review, so this detects gaming on a delay, not live.
   - Ground truth is the internal compliance reviewer, backstopped by the external anti-doping authority that reviews each justification at competition. That external check is why no watcher-of-the-reviewer is added: a second internal oversight layer would duplicate scrutiny the outside world already performs.
   - Cadence requirement: review is detective (overrides proceed immediately per A4; the reviewer inspects after the fact), so it must run at least weekly — daily preferred — to keep gaming-detection lag inside the window where an undetected rubber-stamping pattern could harm an athlete's eligibility. Staffing to meet this cadence is an operations decision; the maximum lag is a metric requirement and lives here.
+- Guardrail (UX) — median time added per prescription by the check stays within an acceptable bound, so the safeguard is not abandoned for friction. A check that adds too long per prescription fails even at a 0% unwanted-flag rate.
+  - Numerator basis: median extra time a prescription takes when it passes through the check, versus the pre-check baseline.
+  - Denominator: prescriptions to `subjectToAntiDoping` patients, per quarter. Source: audit log timestamps.
+  - Threshold: TBD — set from usability testing (the added time doctors tolerate before abandonment). A guardrail without a bound is not yet complete; the bound is a UX-research output, like the freshness threshold is a spike output.
 
 ## Scope
 
@@ -112,3 +116,7 @@ This is a feature-level exit gate for v1, distinct from the per-story acceptance
 ## Biggest open risk
 
 Substance matching. If v1 relies on free-text drug names instead of a controlled substance field, the check will both miss real prohibited substances and false-flag permitted ones — failing the primary metric and tripping the guardrail at once. The substance-selection design decides whether v1 works at all.
+
+## Design risks accepted
+- Residual risk accepted by A4: because overrides proceed immediately (not blocked), a bad override is caught by detective review only after the athlete may already be exposed. This is deliberate — a blocking design would prevent it but would stall every legitimate, urgent TUE prescription. The clinic accepts detective-lag risk rather than block necessary care.
+- The safeguard reduces incidents and builds trust; it does not replace physician responsibility. The prescribing doctor is professionally accountable and signs the prescription; the system is a second line, not the first. Detective review is sufficient precisely because it sits on top of an already-accountable clinician. In a clinic whose product is clearance, that trust is the core value, not optional goodwill.
