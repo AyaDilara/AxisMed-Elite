@@ -95,6 +95,8 @@ Technical risks & open questions:
 - In-competition checking depends on the athlete's event dates, held in `SportingEvent`; wiring prescribing to event timing is a v2 design question.
 - The external list's format and refresh mechanism are unresolved and belong in the RFC.
 - The `subjectToAntiDoping` flag is set once at registration, not re-evaluated. A patient who becomes regulated later would be missed unless it is updated; a retired athlete stays flagged. For v1 the accepted error direction is over-inclusion (flag the retired) over under-inclusion (miss the active) — missing a regulated athlete is the catastrophic failure, so the gate errs toward checking. Keeping the flag current is a maintained dependency, like the list.
+- Validation is not possible pre-deployment: the primary metric is lagging (violations are rare by design), so effectiveness can only be confirmed at a real clinic over time. Pre-launch, the check can be verified (correctness against the full WADA list, deterministically) but not validated (effectiveness with real doctors). These are different claims; only verification is achievable now.
+- Two thresholds are unset and block the guardrails from being complete: the unwanted-flag bound implicitly at 5% but the time-added bound (TBD, needs usability testing) and the list-staleness threshold (TBD, spike output). Until both are set, two of three guardrails cannot fire.
 
 Sequencing:
 - Spike (precondition for v1): resolve list source, substance-matching approach, and the staleness threshold before A2/A3 estimation. The threshold value is referenced by the fail-loud criterion but supplied by this spike, not by the criterion itself.
