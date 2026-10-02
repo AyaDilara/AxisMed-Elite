@@ -107,6 +107,10 @@ This is called out deliberately rather than hidden — identifying it is part of
 
 The specification for closing this gap lives in [`docs/prd-antidoping.md`](docs/prd-antidoping.md): a PRD scoping an anti-doping prescribing check — problem, users, acceptance criteria, and technical design. The scope call is the point: v1 ships an exact substance match against a version-stamped prohibited list, warning and requiring a logged justification before a flagged prescription can be saved. Brand-name-to-ingredient matching and in-competition timing are deferred to v2 — narrowing v1 to what can be built correctly, because a matching layer that mis-flags substances would fail the check's own metric. The check hooks into `ClinicService.prescribeMedication()` and fails loud rather than open: unresolved substance status blocks the save.
 
+## BA Case Study
+
+The anti-doping gap above is specified and analysed as a full business-analysis case study in [`/docs`](docs/) — problem analysis, PRD, user stories with acceptance criteria, process maps, and prioritisation. Start at the [case-study index](docs/README.md).
+
 ## Roadmap
 
 Each item states the outcome it unlocks, not just the change.
