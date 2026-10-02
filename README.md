@@ -85,7 +85,7 @@ Patient : Marcus Johnson   ID: PAT001   Age: 36   Sport: FOOTBALL
 ## Reproduce
 
 ```bash
-git clone https://github.com/ayadilara10/AxisMed-Elite.git
+git clone https://github.com/AyaDilara/AxisMed-Elite.git
 cd AxisMed-Elite
 javac -d out -sourcepath src src/axismed/Main.java
 java -cp out axismed.Main
