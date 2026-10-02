@@ -16,6 +16,8 @@ Entry 1 is the flagship design gap the anti-doping specification addresses. Entr
 
 **Recommendation.** Close per `prd-antidoping.md`: an interruptive, fail-loud check at the prescribing hook, gated on the patient's anti-doping status, with a logged justification (Therapeutic Use Exemption) path. Specified and sequenced; v1 in progress.
 
+**Market context.** The gap is not only internal. Anti-doping medication checking today is a separate, manual, athlete-initiated lookup (e.g. Global DRO), not integrated into any prescriber's workflow; ordinary e-prescribing decision support checks interactions and dosing, not anti-doping status; and anti-doping authorities have documented that prescribing systems handle this unreliably. AxisMed's contribution is the integration — moving the check from the athlete's manual afterthought to an automated, prescriber-side safeguard at the point of prescription.
+
 ---
 
 ## 2. No way to distinguish a regulated patient from a non-regulated one `High`
