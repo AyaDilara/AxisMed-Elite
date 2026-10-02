@@ -1,4 +1,4 @@
-# User Stories & Acceptance Criteria — AxisMed Elite
+# User Stories, Acceptance Criteria & Backlog — AxisMed Elite
 
 This document specifies user stories with acceptance criteria for AxisMed Elite's core flows. It covers four flows: the anti-doping prescribing safeguard (proposed, specified in full in `prd-antidoping.md`), and three flows reconstructed from the current system — patient registration and records, appointment and clearance scheduling, and authentication and access control.
 
@@ -45,6 +45,22 @@ The gate is doing real work, not decorating. A2a and A3 depend on values the A6 
 | D1 | Role-based login | Auth & access control | Reconstructed |
 | D2 | Enforce permissions | Auth & access control | Reconstructed |
 | D3 | Audit every action | Auth & access control | Reconstructed |
+
+## Backlog priority order
+
+The stories fall into two sets: **proposed** items (net-new, to build) and **reconstructed** items (already implemented, documented here for traceability). Only the proposed set is a build backlog, ordered by dependency and by the analysis in `prioritization-divergence.md`:
+
+1. **A6 — spike** — enabler; unblocks A2a and A3 by resolving the data source, matching approach, and staleness threshold.
+2. **A7 — capture anti-doping status** — data prerequisite; A2a's gate cannot run without it.
+3. **A2a — always-prohibited warning** — the core safeguard.
+4. **A3 — fail loud** — safety-critical; the list-unavailable path.
+5. **A4 — record justification** — the TUE/override path; the need is met by a manual paper process until this ships.
+6. **A5 — audit the justified prescription** — feeds the compliance reviewer.
+7. **A2b — in-competition warning** — v2; depends on `SportingEvent` date wiring.
+
+Access-control and data-model items from `gaps-and-recommendations.md` sit alongside this backlog, sequenced there by severity and cost of delay (the clearance-gate fix rising ahead of the planned API).
+
+The reconstructed flows (B, C, D) are not build items — they specify behaviour already in the codebase, included so every current capability is traceable to a story.
 
 ---
 
@@ -106,7 +122,7 @@ As a **doctor**, I want the system to withhold the prescription and warn me when
 
 **Given** the prohibited-substances list is missing or unreadable
 **When** the doctor submits any prescription
-**Then** an interruptive warning states the substance cannot be verified
+**Then** an interruptive warning states that the automated check is unavailable, that this is not a clearance, and that the substance must be verified manually against the prohibited list before proceeding
 **And** the prescription is withheld until the doctor records an explicit acknowledgement
 **And** the withheld attempt is written to the audit log
 
@@ -115,7 +131,10 @@ As a **doctor**, I want the system to withhold the prescription and warn me when
 **Then** the system flags that the list may be out of date
 **And** a "no warning" result is not presented as a guarantee
 
-**Design note.** This story fails closed: when substance status is unknown, the system withholds rather than proceeds. Absence of a warning must never read as a clearance. The freshness threshold is a parameter this specification references; the value is supplied by the A6 spike and does not block writing or reviewing these criteria.
+**Warning text (v1).** The interruption reads, in order — cause, correction of the default, then required action:
+> Automated anti-doping check unavailable — the prohibited-substance list could not be read. This is not a clearance. Verify this substance against the WADA Prohibited List manually before continuing.
+
+**Design note.** This story fails closed: when substance status is unknown, the system withholds rather than proceeds. Absence of a warning must never read as a clearance. The warning states the backstage cause because the cause is action-relevant — it tells the doctor why there is no result and what to do. The freshness threshold is a parameter this specification references; the value is supplied by the A6 spike and does not block writing or reviewing these criteria.
 
 ### A4 — Record justification for a flagged substance `Proposed`
 
@@ -147,14 +166,14 @@ As a **compliance reviewer** *(proposed role — see note)*, I want every justif
 
 ### A6 — Spike: prohibited-substances data source `Proposed (investigation)`
 
-As the delivery team, we need to determine how the prohibited-substances list is sourced, structured, matched, and aged, so that stories A2 and A3 become estimable and their parameters can be fixed.
+As the delivery team, we need to determine how the prohibited-substances list is sourced, structured, matched, and aged, so that stories A2a and A3 become estimable and their parameters can be fixed.
 
 This is a timeboxed investigation, not a shippable story. It resolves:
 - Source and format of the list (static version-stamped file for v1; official machine-readable source deferred to the RFC).
 - Substance matching — how an entered substance maps to a listed one across brands, spellings, and combination products. This is the primary open risk named in the PRD.
 - The freshness threshold at which a loaded list is treated as stale (the value referenced by A3).
 
-Stories A2 and A3 are not estimable until this investigation closes.
+Stories A2a and A3 are not estimable until this investigation closes.
 
 ### A7 — Capture anti-doping status at registration `Proposed (v1)`
 
