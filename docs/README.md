@@ -31,7 +31,7 @@ Four prioritisation methods applied to the backlog, showing where they agree (ro
 
 *The artifacts above are the business-analysis spine. The ones below go into the engineering "how" — included because the case study is meant to stand on both sides of the product/engineering seam, not only the product side. A reader focused on the analysis can stop at the five above.*
 
-- **Requirements Traceability Matrix** — requirement → story → acceptance criterion → verification, in one grid. *(planned)*
+- **[Requirements Traceability Matrix](traceability-matrix.md)** — requirement → story → acceptance criterion → verification, in one grid, with each requirement marked by whether it's provable now or only after deployment.
 - **Architecture Decision Records** — the standing design decisions (gate on a boolean not the sport taxonomy; fail-loud default; service-layer hook; oversight role modelled without clinical capability; static list for v1) as decision records. *(planned)*
 - **RFC — Technical Design** — the "how" the PRD defers to: architecture, data model, substance-matching, instrumentation, and list-source integration. *(planned)*
 - **Metrics / KPI dashboard** — the PRD's metric system visualised (with clearly-labelled synthetic data, since the system has no live traffic). *(planned)*
