@@ -33,7 +33,8 @@ Four prioritisation methods applied to the backlog, showing where they agree (ro
 
 - **[Requirements Traceability Matrix](traceability-matrix.md)** — requirement → story → acceptance criterion → verification, in one grid, each requirement marked by whether it's provable now or only after deployment.
 - **[Architecture Decision Records](architecture-decisions.md)** — the five standing design decisions (gate on a boolean not the sport taxonomy; fail-loud default; service-layer hook; oversight role without clinical capability; static list for v1), each with the alternatives rejected and consequences accepted.
-- **RFC — Technical Design** — the "how" the PRD defers to: architecture, data model, substance-matching, instrumentation, and list-source integration. *(planned)*
+- **[RFC-01 — Anti-Doping Check: Technical Design](rfc-anti-doping-check.md)** — the full "how": components, data model, control flow, fail-loud mechanism, instrumentation, and the external-list path.
+- **[RFC-02 — Substance Matching](rfc-substance-matching.md)** — the deep-dive on the one problem RFC-01 defers: matching an entered medication to the prohibited list.
 - **Metrics / KPI dashboard** — the PRD's metric system visualised (with clearly-labelled synthetic data, since the system has no live traffic). *(planned)*
 
 ---
